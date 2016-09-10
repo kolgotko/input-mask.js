@@ -5,6 +5,9 @@ var Corrector = function(input) {
 	if (input.hasAttribute('data-pattern'))
 		this._pattern = input.getAttribute('data-pattern');
 
+	else if (input.hasAttribute('placeholder'))
+		this._pattern = input.getAttribute('placeholder');
+
 	if (input.hasAttribute('data-pattern-vars')) {
 
 		vars = input.getAttribute('data-pattern-vars');
