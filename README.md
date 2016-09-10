@@ -17,3 +17,17 @@ For the correctness of the user input
 </script>
 ```
 Enjoy ;)
+
+## Options:
+
+Without the use of `placeholder`:
+
+```html
+<input type="text" placeholder="any placeholder" data-pattern="XX.XX.XXXX" />
+```
+
+Setting pattern variables:
+
+```html
+<input type="text" data-pattern="xxx-XXXXX" data-pattern-vars="{X: '\\d', x: '[a-zA-Z]'}" />
+```
