@@ -1,0 +1,23 @@
+{
+  "name": "corrector.js",
+  "version": "1.0.0",
+  "description": "For the correctness of the user input ## How to use:",
+  "main": "corrector.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kolgotko/Corrector.js.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kolgotko/Corrector.js/issues"
+  },
+  "homepage": "https://github.com/kolgotko/Corrector.js#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-jsmin": "^0.1.5"
+  }
+}
