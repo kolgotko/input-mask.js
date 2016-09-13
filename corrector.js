@@ -68,7 +68,8 @@ Corrector.prototype.correct = function() {
 
 		if (!(item in this._vars)) {
 
-			this._input.value = this._state + item;
+			var state = this._state.substr(0, value.length - 1);
+			this._input.value = state + item;
 			this.keepState();
 
 			this._input.value += symbol;
