@@ -20,7 +20,7 @@ var Corrector = function(input) {
 	input.addEventListener('keydown', function() { self.keepState() } );
 	input.addEventListener('input', function() { self.correct() } );
 
-	this.correct();
+	this.emulateInsert(this._input.value);
 
 }
 
@@ -33,6 +33,23 @@ Corrector.prototype._input;
 Corrector.prototype._vars = {
 	'X': '\\d',
 };
+
+Corrector.prototype.emulateInsert = function (value) {
+
+	this._input.value = '';
+
+	for (i in value) {
+
+		this.keepState();
+		this._input.value += value[i];
+
+		if (!this.correct()) return false;
+
+	}
+
+	return true;
+
+}
 
 Corrector.prototype.strToVars = function (str) {
 
