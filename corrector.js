@@ -19,6 +19,14 @@ var Corrector = function(input) {
 
 	input.addEventListener('keydown', function() { self.keepState() } );
 	input.addEventListener('input', function() { self.correct() } );
+	input.addEventListener('paste', function(e) {
+
+		var clipboardData, pastedData;
+		clipboardData = e.clipboardData || window.clipboardData;
+		pastedData = clipboardData.getData('Text');
+		self.emulateInsert(pastedData);
+
+	} );
 
 	this.emulateInsert(this._input.value);
 
