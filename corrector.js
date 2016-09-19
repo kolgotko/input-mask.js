@@ -55,6 +55,7 @@ Corrector.prototype.emulateInsert = function (value) {
 
 	}
 
+	this.keepState();
 	return true;
 
 }
