@@ -18,13 +18,9 @@ var Corrector = function(input) {
 	var self = this;
 
 	input.addEventListener('keydown', function() { self.keepState() } );
-	input.addEventListener('input', function() { self.correct() } );
-	input.addEventListener('paste', function(e) {
+	input.addEventListener('input', function() {
 
-		var clipboardData, pastedData;
-		clipboardData = e.clipboardData || window.clipboardData;
-		pastedData = clipboardData.getData('Text');
-		self.emulateInsert(pastedData);
+		self.emulateInsert(self._input.value)
 
 	} );
 
@@ -46,7 +42,7 @@ Corrector.prototype.emulateInsert = function (value) {
 
 	this._input.value = '';
 
-	for (i in value) {
+	for (var i = 0; i != value.length; i++) {
 
 		this.keepState();
 		this._input.value += value[i];
@@ -62,7 +58,7 @@ Corrector.prototype.emulateInsert = function (value) {
 
 Corrector.prototype.strToVars = function (str) {
 
-	return (new Function('', 'return ' + str))();
+	return (new Function('return ' + str))();
 
 }
 
