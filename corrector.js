@@ -1,137 +1,131 @@
-var Corrector = function(input) {
+'use strict';
 
-	this._input = input;
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	if (input.hasAttribute('data-pattern'))
-		this._pattern = input.getAttribute('data-pattern');
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	else if (input.hasAttribute('placeholder'))
-		this._pattern = input.getAttribute('placeholder');
+var Corrector = function () {
+	function Corrector(input) {
+		var _this = this;
 
-	if (input.hasAttribute('data-pattern-vars')) {
+		_classCallCheck(this, Corrector);
 
-		vars = input.getAttribute('data-pattern-vars');
-		this._vars = this.strToVars(vars);
+		this._input = input;
 
+		this._state = '';
+
+		this._pattern = '';
+
+		this._vars = {
+			'X': '\\d'
+		};
+
+		if (input.hasAttribute('data-pattern')) this._pattern = input.getAttribute('data-pattern');else if (input.hasAttribute('placeholder')) this._pattern = input.getAttribute('placeholder');
+
+		if (input.hasAttribute('data-pattern-vars')) {
+
+			var vars = input.getAttribute('data-pattern-vars');
+			this._vars = this.strToVars(vars);
+		}
+
+		input.addEventListener('keydown', function () {
+			_this.keepState();
+		});
+		input.addEventListener('input', function () {
+
+			_this.emulateInsert(_this._input.value);
+		});
+
+		this.emulateInsert(this._input.value);
 	}
 
-	var self = this;
+	_createClass(Corrector, [{
+		key: 'emulateInsert',
+		value: function emulateInsert(value) {
 
-	input.addEventListener('keydown', function() { self.keepState() } );
-	input.addEventListener('input', function() {
+			this._input.value = '';
 
-		self.emulateInsert(self._input.value)
+			for (var i = 0; i != value.length; i++) {
 
-	} );
+				this.keepState();
+				this._input.value += value[i];
 
-	this.emulateInsert(this._input.value);
+				if (!this.correct()) return false;
+			}
 
-}
-
-Corrector.prototype._state = '';
-
-Corrector.prototype._pattern = '';
-
-Corrector.prototype._input;
-
-Corrector.prototype._vars = {
-	'X': '\\d',
-};
-
-Corrector.prototype.emulateInsert = function (value) {
-
-	this._input.value = '';
-
-	for (var i = 0; i != value.length; i++) {
-
-		this.keepState();
-		this._input.value += value[i];
-
-		if (!this.correct()) return false;
-
-	}
-
-	this.keepState();
-	return true;
-
-}
-
-Corrector.prototype.strToVars = function (str) {
-
-	return (new Function('return ' + str))();
-
-}
-
-Corrector.prototype.keepState = function() {
-
-	this._state = this._input.value;
-
-}
-
-Corrector.prototype.correct = function() {
-
-	var value = this._input.value;
-	var symbol = value[value.length - 1];
-
-	if (this._pattern.length < value.length) {
-
-		this._input.value = this._state;
-		return false;
-
-	}
-
-	var pattern = this._pattern.slice(0, value.length);
-
-	var exp = this.toRegExp(pattern);
-
-	if (!value.match(exp)) {
-
-		var item = this._pattern[value.length - 1];
-
-		if (!(item in this._vars)) {
-
-			var state = this._state.substr(0, value.length - 1);
-			this._input.value = state + item;
 			this.keepState();
-
-			this._input.value += symbol;
-
-			return this.correct();
-
+			return true;
 		}
-		else {
-
-			this._input.value = this._state;
-			return false;
-
+	}, {
+		key: 'strToVars',
+		value: function strToVars(str) {
+			return new Function('return ' + str)();
 		}
+	}, {
+		key: 'keepState',
+		value: function keepState() {
+			this._state = this._input.value;
+		}
+	}, {
+		key: 'correct',
+		value: function correct() {
 
-	}
+			var value = this._input.value;
+			var symbol = value[value.length - 1];
 
-	else return true;
+			if (this._pattern.length < value.length) {
 
-}
+				this._input.value = this._state;
+				return false;
+			}
 
-Corrector.prototype.toRegExp = function(pattern) {
+			var pattern = this._pattern.slice(0, value.length);
 
-	pattern = pattern.replace(/(\W)/g, '\\$1');
+			var exp = this.toRegExp(pattern);
 
-	for (k in this._vars) {
-		pattern = pattern.split(k).join(this._vars[k]);
-	}
+			if (!value.match(exp)) {
 
-	return new RegExp(pattern);
+				var item = this._pattern[value.length - 1];
 
-}
+				if (!(item in this._vars)) {
 
-Corrector.prototype.setPattern = function(pattern) {
+					var state = this._state.substr(0, value.length - 1);
+					this._input.value = state + item;
+					this.keepState();
 
-	this._pattern = pattern;
+					this._input.value += symbol;
 
-}
+					return this.correct();
+				} else {
 
-Corrector.prototype.setVars = function(vars) {
+					this._input.value = this._state;
+					return false;
+				}
+			} else return true;
+		}
+	}, {
+		key: 'toRegExp',
+		value: function toRegExp(pattern) {
 
-	this._vars = vars;
+			pattern = pattern.replace(/(\W)/g, '\\$1');
 
-}
+			for (var k in this._vars) {
+				pattern = pattern.split(k).join(this._vars[k]);
+			}
+
+			return new RegExp(pattern);
+		}
+	}, {
+		key: 'setPattern',
+		value: function setPattern(pattern) {
+			this._pattern = pattern;
+		}
+	}, {
+		key: 'setVars',
+		value: function setVars(vars) {
+			this._vars = vars;
+		}
+	}]);
+
+	return Corrector;
+}();

@@ -17,7 +17,10 @@
   },
   "homepage": "https://github.com/kolgotko/Corrector.js#readme",
   "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-preset-latest": "^6.16.0",
     "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
     "gulp-jsmin": "^0.1.5"
   }
 }

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>corrector.js</title>
+</head>
+<body>
+
+	<input id="my-input-phone" type="text" placeholder="+7 (XXX) XXX-XX-XX" />
+	<input id="my-input-date" type="text" placeholder="XX.XX.XXXX" />
+	<input id="my-input-mixed" type="text" data-pattern="xxx-XXXXX" data-pattern-vars="{X: '\\d', x: '[a-zA-Z]'}" />
+
+	<script src="corrector.js"></script>
+	<script>
+
+	  var inputPhone = document.getElementById('my-input-phone');
+	  var inputDate = document.getElementById('my-input-date');
+	  var inputMixed = document.getElementById('my-input-mixed');
+
+	  var correctorPhone = new Corrector(inputPhone);
+	  var correctorDate = new Corrector(inputDate);
+	  var correctorMixed = new Corrector(inputMixed);
+
+	</script>
+
+</body>
+</html>

@@ -1,10 +1,28 @@
-var gulp = require('gulp');
-var jsmin = require('gulp-jsmin');
-var rename = require('gulp-rename');
+const gulp = require('gulp');
+const babel = require('gulp-babel');
+const jsmin = require('gulp-jsmin');
+const rename = require('gulp-rename');
 
-gulp.task('default', function() {
-	 gulp.src('corrector.js')
+gulp.task('default', ['build-dev', 'build-prod']);
+
+gulp.task('build-prod', () => {
+
+	return gulp.src('./src/corrector.js')
+		.pipe(babel({
+			presets: ['latest']
+		}))
 		.pipe(jsmin())
 		.pipe(rename({suffix: '.min'}))
 		.pipe(gulp.dest('./'));
+
+});
+
+gulp.task('build-dev', () => {
+
+	return gulp.src('./src/corrector.js')
+		.pipe(babel({
+			presets: ['latest']
+		}))
+		.pipe(gulp.dest('./'));
+
 });
