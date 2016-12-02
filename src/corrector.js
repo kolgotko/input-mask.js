@@ -14,6 +14,10 @@ class Corrector {
 			'X': '\\d',
 		};
 
+		this._events = {
+			complete: new EventEmitter,
+		};
+
 		if (input.hasAttribute('data-pattern'))
 			this._pattern = input.getAttribute('data-pattern');
 
@@ -50,6 +54,7 @@ class Corrector {
 			if (!this.correct()) return false;
 
 		}
+		if (this.isComplete()) this._events.complete.dispatch();
 
 		this.keepState();
 		return true;
@@ -60,14 +65,29 @@ class Corrector {
 
 	keepState() { this._state = this._input.value; }
 
+	isOver() {
+
+		let value = this._input.value;
+		return this._pattern.length < value.length;
+
+	}
+
+	isComplete() {
+
+		let value = this._input.value;
+		return this._pattern.length == value.length;
+
+	}
+
 	correct() {
 
 		let value = this._input.value;
 		let symbol = value[value.length - 1];
 
-		if (this._pattern.length < value.length) {
+		if (this.isOver()) {
 
 			this._input.value = this._state;
+
 			return false;
 
 		}
@@ -94,6 +114,7 @@ class Corrector {
 			else {
 
 				this._input.value = this._state;
+
 				return false;
 
 			}
@@ -119,5 +140,14 @@ class Corrector {
 	setPattern(pattern) { this._pattern = pattern; }
 
 	setVars(vars) { this._vars = vars; }
+
+	on(name, handler) {
+	
+		if (!this._events[name])
+		  this._events[name] = new this.EventEmitter;
+	
+		this._events[name].push(handler);
+	
+	}
 
 }
