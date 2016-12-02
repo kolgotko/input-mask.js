@@ -20,6 +20,10 @@ var Corrector = function () {
 			'X': '\\d'
 		};
 
+		this._events = {
+			complete: new EventEmitter()
+		};
+
 		if (input.hasAttribute('data-pattern')) this._pattern = input.getAttribute('data-pattern');else if (input.hasAttribute('placeholder')) this._pattern = input.getAttribute('placeholder');
 
 		if (input.hasAttribute('data-pattern-vars')) {
@@ -52,6 +56,7 @@ var Corrector = function () {
 
 				if (!this.correct()) return false;
 			}
+			if (this.isComplete()) this._events.complete.dispatch();
 
 			this.keepState();
 			return true;
@@ -67,15 +72,30 @@ var Corrector = function () {
 			this._state = this._input.value;
 		}
 	}, {
+		key: 'isOver',
+		value: function isOver() {
+
+			var value = this._input.value;
+			return this._pattern.length < value.length;
+		}
+	}, {
+		key: 'isComplete',
+		value: function isComplete() {
+
+			var value = this._input.value;
+			return this._pattern.length == value.length;
+		}
+	}, {
 		key: 'correct',
 		value: function correct() {
 
 			var value = this._input.value;
 			var symbol = value[value.length - 1];
 
-			if (this._pattern.length < value.length) {
+			if (this.isOver()) {
 
 				this._input.value = this._state;
+
 				return false;
 			}
 
@@ -99,6 +119,7 @@ var Corrector = function () {
 				} else {
 
 					this._input.value = this._state;
+
 					return false;
 				}
 			} else return true;
@@ -125,7 +146,50 @@ var Corrector = function () {
 		value: function setVars(vars) {
 			this._vars = vars;
 		}
+	}, {
+		key: 'on',
+		value: function on(name, handler) {
+
+			if (!this._events[name]) this._events[name] = new this.EventEmitter();
+
+			this._events[name].push(handler);
+		}
 	}]);
 
 	return Corrector;
+}();
+
+'use strict';
+
+var EventEmitter = function () {
+	function EventEmitter() {
+		_classCallCheck(this, EventEmitter);
+
+		this._queue = [];
+	}
+
+	_createClass(EventEmitter, [{
+		key: 'dispatch',
+		value: function dispatch() {
+
+			for (var i = 0; i != this._queue.length; i++) {
+				this._queue[i].apply(this, arguments);
+			}
+		}
+	}, {
+		key: 'push',
+		value: function push(handler) {
+
+			this._queue.push(handler);
+			return this;
+		}
+	}, {
+		key: 'clear',
+		value: function clear() {
+
+			this._queue = [];
+		}
+	}]);
+
+	return EventEmitter;
 }();
