@@ -10,7 +10,7 @@ class EventEmitter {
 
 	dispatch() {
 
-		for(var i = 0; i != this._queue.length; i++)
+		for (var i = 0; i != this._queue.length; i++)
 			this._queue[i].apply(this, arguments);
 
 	}
